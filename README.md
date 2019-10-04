@@ -2,7 +2,7 @@
 
 This library provides integration with [Exosite](https://exosite.com/iot-solutions/condition-monitoring/) by wrapping the [Exosite HTTPS Device API](http://docs.exosite.com/reference/products/device-api/http/).
 
-**To include this library in your project, add** `#require "Exosite.agent.lib.nut:1.0.0"` **at the top of your agent code**
+**To include this library in your project, add** `#require "Exosite.agent.lib.nut:1.1.0"` **at the top of your agent code**
 
 ## Contents ##
 
@@ -18,8 +18,10 @@ This library provides integration with [Exosite](https://exosite.com/iot-solutio
     * [readAttribute(<em>attribute, callback, token</em>)](#readattributeattribute-callback-token)
     * [setDebugMode(<em>value</em>)](#setdebugmodevalue)
     * [setConfigIORefreshTimeout(<em>timeout</em>)](#setconfigiorefreshtimeouttimeout)
+* [Configuring Channels In ExoSense](#configuring-channels-in-exosense)
 * [Modes](#modes)
     * [MuranoProduct](#muranoproduct)
+    * [IOT_CONNECTOR](#iot-connector)
 * [Troubleshooting](#troubleshooting)
     * [Authorization Issues](#authorization-issues)
 
@@ -173,6 +175,23 @@ Changes the timeout length for a configIO long poll, defaults to 15000000 ms
 
 Nothing.
 
+## Configuring Channels In ExoSense ##
+To configure the channels in ExoSense to read correctly from the device. The key that the device uses for the data needs to be defined.
+
+To achieve this, the user must have a `Custom` **Protocol**, with `ElectricImp` as the **Application**, and `{"key":<device's corresponding key>}` as the **app_specific_config**
+
+For example, if the device calls
+```
+local conditions = {};
+conditions.temp <- reading.temperature;
+agent.send("reading.sent", conditions);
+```
+
+A corresponding channel configuration could look like the following:
+
+![](media/ChannelConfigurationExample.png)
+
+
 ## Modes ##
 
 This library supports the following usage modes.
@@ -195,6 +214,17 @@ local settings = {};
 settings.productId = "c449gfcd11ky00002";
 settings.deviceId  = "device0001";
 ```
+
+### IoT Connector ###
+
+The `Exosite_modes.IOT_CONNECTOR` mode should be selected when connecting to ExoSense using the [ElectricImp IoT Connector Service](https://www.exosite.io/business//exchange/catalog/component/5d88eb136dc761ccebf20079)
+
+#### Settings ####
+
+| Key | Type | Required? | Description |
+| -- | -- | -- | -- |
+| N/A| N/A | N/A | Currently no settings are required when using the IoT Connector Mode |
+
 
 ## Troubleshooting ##
 
